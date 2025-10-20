@@ -1,0 +1,55 @@
+<nav
+  id="nav"
+  class="fixed top-0 left-0 w-full z-40 px-4 md:px-12 lg:px-24 py-6 transition-all duration-500"
+>
+  <div
+    class="max-w-5xl mx-auto flex items-center justify-between transition-all duration-500"
+    id="desktop-menu"
+  >
+    <a href="{{ route('landing') }}" class="flex items-center space-x-3">
+      <span class="text-2xl animate-floating">🌿</span>
+      <span id="site-title" class="text-xl font-medium italic text-gray-700">Bisikan</span>
+    </a>
+
+    <div id="nav-links" class="hidden md:flex items-center space-x-8">
+      <a href="#tentang" class="text-gray-600 hover:text-gray-800 font-medium">Tentang</a>
+      <a
+        href="{{ request.url() == '/' ? '#fitur' : route('landing') + '#fitur' }}"
+        class="text-gray-600 hover:text-gray-800 font-medium"
+      >
+        Fitur
+      </a>
+      <button
+        class="px-6 py-3 bg-[--color-primary] text-gray-800 hover:bg-[#8bb4b1] rounded-full shadow-sm font-medium cursor-pointer duration-250"
+        id="btn-login"
+      >
+        Buat Profil
+      </button>
+    </div>
+
+    <button id="menu-btn" class="md:hidden p-2 text-gray-600">
+      <i data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div
+    id="mobile-menu"
+    class="md:hidden top-full left-0 w-full z-50 transition-all duration-500 overflow-hidden 
+         max-h-0 opacity-0 ease-[cubic-bezier(0.4,0,0.2,1)]"
+  >
+    <div class="flex flex-col items-center space-y-4 py-6">
+      <a href="#tentang" class="text-gray-700 font-medium hover:text-gray-900">Tentang</a>
+      <a
+        href="{{ request.url() == '/' ? '#fitur' : route('landing') + '#fitur' }}"
+        class="text-gray-700 font-medium hover:text-gray-900"
+      >Fitur</a>
+      <button
+        class="px-6 py-2 bg-[--color-primary] text-gray-800 hover:bg-[#8bb4b1] rounded-full shadow-sm font-medium transition-all cursor-pointer duration-250"
+        id="btn-login"
+      >
+        Buat Profil
+    </button>
+    </div>
+  </div>
+</nav>

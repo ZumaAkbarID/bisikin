@@ -1,0 +1,40 @@
+<div
+  id="login-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-md
+         transition-opacity duration-500"
+>
+  <div
+    class="bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg w-[90%] max-w-md p-8
+           transform scale-95 opacity-0 transition-all duration-500"
+    id="login-card"
+  >
+    <div class="flex flex-col items-center text-center space-y-4">
+      <div class="text-4xl">
+        🌿
+      </div>
+      <h2 class="text-2xl font-semibold text-gray-700">
+        Masuk ke Bisikan
+      </h2>
+      <p class="text-gray-600 text-sm max-w-xs">
+        Mulai berbagi dan menerima pesan anonim dengan privasi penuh.
+      </p>
+
+      <a
+        href="{{ route('auth.google.redirect') }}"
+        class="mt-6 flex items-center justify-center gap-3 bg-white/90 hover:bg-white
+               border border-gray-200 shadow-sm rounded-xl px-6 py-3 w-full
+               transition-all duration-300 hover:scale-[1.02]"
+      >
+        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5" />
+        <span class="text-gray-700 font-medium">Masuk dengan Google</span>
+      </a>
+
+      <button
+        id="close-login-modal"
+        class="text-sm text-gray-500 hover:text-gray-700 mt-6 transition-all cursor-pointer"
+      >
+        Batal
+      </button>
+    </div>
+  </div>
+</div>

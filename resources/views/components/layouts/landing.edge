@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>
+      {{ title || config('master.appName') }}
+    </title>
+    @if ($slots.meta)
+      {{{ await $slots.meta() }}}
+    @endif
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    @vite(['resources/css/app.css','resources/js/app.ts'])
+
+    @stack('head')
+  </head>
+  <body class="h-full overflow-x-hidden font-sans pt-24">
+    <!-- Background layers -->
+    <div class="fixed inset-0 bg-ghibli-gradient">
+    </div>
+    <div class="fixed inset-0 bg-ghibli-gradient animate-breathing">
+    </div>
+    <div class="fixed inset-0 bg-white/10 backdrop-blur-sm">
+    </div>
+
+    <div class="relative min-h-full">
+      @include('components/navbar')
+      <main>
+        {{{ await $slots.main() }}}
+      </main>
+      @include('components/footer')
+    </div>
+
+    @include('components/login_modal')
+    @stack('scripts')
+  </body>
+</html>

@@ -1,0 +1,157 @@
+@layouts.landing({ title: "Welcome page title" })
+  @slot('meta')
+    <meta name="description" content="A welcome page made with EdgeJS" />
+  @endslot
+  
+  @slot('main')
+    <!-- Hero -->
+    <section class="relative z-10 px-4 md:px-12 lg:px-24 py-20 text-center">
+      <div class="max-w-5xl mx-auto">
+        <div class="animate-floating mb-12 text-8xl">
+          ☁️
+        </div>
+
+        <h1
+          id="hero-headline"
+          class="text-4xl md:text-6xl lg:text-7xl font-light text-gray-700 mb-8 animate-fade-in-up leading-tight"
+        >
+          Tempat semua kata yang tak terucap.
+        </h1>
+
+        <p
+          id="hero-subtext"
+          class="text-lg md:text-xl lg:text-2xl text-gray-600 mb-16 animate-fade-in-up max-w-3xl mx-auto leading-relaxed font-light"
+        >
+          Bisikan adalah ruang anonim untuk berbagi pikiran, rahasia, dan perasaan — dengan privasi penuh.
+        </p>
+
+        <button
+          id="btn-login"
+          class="px-10 py-4 text-gray-800 font-medium text-lg rounded-xl glow-pulse shadow-lg cursor-pointer"
+        >
+          Buat Profil
+        </button>
+      </div>
+    </section>
+
+    <!-- Fitur -->
+    <section id="fitur" class="relative z-10 px-4 md:px-12 lg:px-24 py-20">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-center text-gray-700 mb-20">
+          Fitur Utama
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+          <div class="card-hover bg-white/30 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center">
+            <div
+              class="w-20 h-20 mx-auto mb-8 bg-white/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"
+            >
+              <i data-lucide="lock" class="w-10 h-10 text-gray-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-6">
+              🔒 Privasi Penuh
+            </h3>
+            <p class="text-gray-600 leading-relaxed font-light">
+              Semua pesan terenkripsi, kamu punya kendali penuh atas privasi dan keamanan data.
+            </p>
+          </div>
+
+          <div class="card-hover bg-white/30 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center">
+            <div
+              class="w-20 h-20 mx-auto mb-8 bg-white/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"
+            >
+              <i data-lucide="puzzle" class="w-10 h-10 text-gray-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-6">
+              🧩 Clue System
+            </h3>
+            <p class="text-gray-600 leading-relaxed font-light">
+              Pengirim bisa kasih petunjuk kecil tanpa ketahuan — tetap misterius tapi bermakna.
+            </p>
+          </div>
+
+          <div class="card-hover bg-white/30 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center">
+            <div
+              class="w-20 h-20 mx-auto mb-8 bg-white/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"
+            >
+              <i data-lucide="cloud" class="w-10 h-10 text-gray-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-6">
+              🌫️ Ghibli Vibe
+            </h3>
+            <p class="text-gray-600 leading-relaxed font-light">
+              Desain yang tenang, lembut, dan menenangkan — seperti dunia Studio Ghibli.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kutipan -->
+    <section class="relative z-10 px-4 md:px-12 lg:px-24 py-20">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="backdrop-glow rounded-3xl p-12 lg:p-16 shadow-lg">
+          <blockquote
+            id="quote-text"
+            class="text-2xl md:text-3xl lg:text-4xl font-light italic text-gray-700 leading-relaxed text-glow"
+          >
+            "Kadang, kata-kata paling jujur hanya bisa dibisikkan — bukan diucapkan."
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cara Kerja -->
+    <section class="relative z-10 px-4 md:px-12 lg:px-24 py-20">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-center text-gray-700 mb-20">
+          Cara Kerja
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+          <div class="text-center animate-slide-in-left" style="animation-delay:.2s">
+            <div
+              class="w-24 h-24 mx-auto mb-8 bg-white/40 rounded-full flex items-center justify-center text-3xl font-light text-gray-700 backdrop-blur-sm shadow-lg"
+            >
+              1
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-6">
+              Buat Profil Unik
+            </h3>
+            <p class="text-gray-600 font-light leading-relaxed">
+              Pilih username unik di bisikan.id/username dan personalisasi profil sesuai keinginan.
+            </p>
+          </div>
+
+          <div class="text-center animate-slide-in-center" style="animation-delay:.4s">
+            <div
+              class="w-24 h-24 mx-auto mb-8 bg-white/40 rounded-full flex items-center justify-center text-3xl font-light text-gray-700 backdrop-blur-sm shadow-lg"
+            >
+              2
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-6">
+              Bagikan Link
+            </h3>
+            <p class="text-gray-600 font-light leading-relaxed">
+              Share link profil ke teman-teman atau media sosial untuk mulai menerima pesan.
+            </p>
+          </div>
+
+          <div class="text-center animate-slide-in-right" style="animation-delay:.6s">
+            <div
+              class="w-24 h-24 mx-auto mb-8 bg-white/40 rounded-full flex items-center justify-center text-3xl font-light text-gray-700 backdrop-blur-sm shadow-lg"
+            >
+              3
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-6">
+              Terima Pesan Anonim
+            </h3>
+            <p class="text-gray-600 font-light leading-relaxed">
+              Kontrol privasimu sendiri dan nikmati pesan-pesan yang masuk dengan tenang.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  @endslot
+@end
