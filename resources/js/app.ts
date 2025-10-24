@@ -8,11 +8,19 @@ document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((anchor) =>
   anchor.addEventListener('click', (e) => {
     e.preventDefault()
 
-    const target = document.querySelector(anchor.getAttribute('href')!) as HTMLElement | null
+    const targetSelector = anchor.getAttribute('href')
+    if (!targetSelector) return
 
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' })
-    }
+    const target = document.querySelector(targetSelector) as HTMLElement | null
+    if (!target) return
+
+    const offset = 24
+    const top = target.getBoundingClientRect().top + window.scrollY - offset
+
+    window.scrollTo({
+      top,
+      behavior: 'smooth',
+    })
   })
 })
 
