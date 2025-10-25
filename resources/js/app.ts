@@ -1,6 +1,7 @@
 /// <reference lib="dom" />
 
 import { createIcons, icons } from 'lucide'
+import axios from 'axios'
 
 createIcons({ icons })
 
@@ -30,7 +31,6 @@ const desktopMenu = document.getElementById('desktop-menu') as HTMLDivElement
 const navElement = document.getElementById('nav') as HTMLElement
 let menuOpen = false
 
-// === Mobile toggle ===
 menuBtn?.addEventListener('click', () => {
   menuOpen = !menuOpen
 
@@ -68,6 +68,13 @@ window.addEventListener('scroll', () => {
 })
 
 const page = document.querySelector('meta[name="data-page"]')?.getAttribute('content')
+
+const csrfToken = document
+  .querySelector('meta[name="csrf-token"]')!
+  .getAttribute('content') as string
+
+axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
 if (page === 'profile') {
   import('./profile.js').then(() => {

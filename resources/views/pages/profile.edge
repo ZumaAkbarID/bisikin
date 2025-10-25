@@ -1,5 +1,6 @@
-@layouts.landing({ title: `Bisikin ke ${username} 🌿` })
+@layouts.landing({ title: `Bisikin ke ${profile.username} 🌿` })
   @slot('meta')
+    <meta name="data-username" content="{{ profile.username }}" />
     <meta name="description" content="Profile page" />
     <meta name="data-page" content="profile" />
   @endslot
@@ -11,26 +12,36 @@
         <div
           class="bg-white/30 backdrop-blur-sm rounded-2xl p-8 shadow-sm text-center animate-fade-in-up glow-soft"
         >
-          <div
-            class="w-24 h-24 mx-auto mb-6 bg-white/40 rounded-full flex items-center justify-center text-4xl backdrop-blur-sm animate-floating"
-          >
-            🌿
-          </div>
+          @if(profile.avatar)
+            <img
+              id="profile-avatar"
+              src="{{ profile.avatar }}"
+              alt="Avatar of {{ profile.username }}"
+              class="w-24 h-24 mx-auto mb-6 rounded-full object-cover border-4 border-white/30 shadow-sm backdrop-blur-sm animate-floating"
+            />
+          @else
+            <div
+              class="w-24 h-24 mx-auto mb-6 bg-white/40 rounded-full flex items-center justify-center text-4xl backdrop-blur-sm animate-floating"
+            >
+              🌿
+            </div>
+          @end
           <h1 id="profile-username" class="text-2xl font-medium text-gray-700 mb-3">
-            {{ username }}
+            {{ '@' + profile.username }}
           </h1>
           <p id="profile-bio" class="text-gray-600 font-light leading-relaxed max-w-md mx-auto">
-            "{{ bio || 'Belum ada bio' }}"
+            "{{ profile.bio || 'Belum ada bio' }}"
           </p>
         </div>
 
         <!-- Message Form -->
         <div class="bg-white/30 backdrop-blur-sm rounded-2xl p-8 shadow-sm animate-slide-up glow-soft">
           <h2 id="form-title" class="text-xl font-medium text-gray-700 mb-6 text-center">
-            Kirim pesan ke {{ username }}
+            Kirim pesan ke {{ profile.username }}
           </h2>
 
           <form id="message-form" class="space-y-6">
+            {{ csrfField() }}
             <!-- Textarea -->
             <div>
               <textarea
@@ -118,14 +129,6 @@
           <div id="messages-grid" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           </div>
 
-          @let(messages = [
-            { message: 'Halo! Semoga harimu menyenangkan!', sender_name: 'Andi', is_anonymous: false, clue: 'Teman lama' },
-            { message: 'Kamu selalu bisa mengandalkanku.', sender_name: null, is_anonymous: true, clue: null },
-            { message: 'Jangan lupa istirahat ya!', sender_name: 'Siti', is_anonymous: false, clue: 'Rekan kerja' },
-            { message: 'Kamu hebat, terus semangat!', sender_name: null, is_anonymous: true, clue: 'Penggemar rahasia' },
-            { message: 'Terima kasih sudah menjadi dirimu sendiri.', sender_name: 'Budi', is_anonymous: false, clue: null },
-            { message: 'Setiap hari adalah kesempatan baru.', sender_name: null, is_anonymous: true, clue: 'Penyemangat' },
-          ] )
           @if(messages.length > 0)
             <div id="messages-grid" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               @each((message, index) in messages)
@@ -139,7 +142,7 @@
                   </p>
                   <div class="text-xs text-gray-500 flex items-center justify-between">
                     <span>
-                      {{ message.is_anonymous ? '🎭 Anonim' : '💬 ' + (message.sender_name || 'Blak-blakan') }}
+                      {{ message.isAnonymous ? '🎭 Anonim' : '💬 ' + (message.senderName || 'Blak-blakan') }}
             </span>
 
                     @if(message.clue)

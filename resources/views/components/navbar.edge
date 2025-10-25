@@ -1,3 +1,4 @@
+@eval(await auth.check())
 <nav
   id="nav"
   class="fixed top-0 left-0 w-full z-40 px-4 md:px-12 lg:px-24 py-6 transition-all duration-500"
@@ -19,12 +20,21 @@
       >
         Fitur
       </a>
-      <button
-        class="px-6 py-3 bg-[--color-primary] text-gray-800 hover:bg-[#8bb4b1] rounded-full shadow-sm font-medium cursor-pointer duration-250"
-        id="btn-login"
-      >
-        Buat Profil
+      @if(auth.isAuthenticated)
+        <button
+          class="px-6 py-3 bg-[--color-primary] text-gray-800 hover:bg-[#8bb4b1] rounded-full shadow-sm font-medium cursor-pointer duration-250"
+          id="btn-login"
+        >
+          Profil
       </button>
+      @else
+        <button
+          class="px-6 py-3 bg-[--color-primary] text-gray-800 hover:bg-[#8bb4b1] rounded-full shadow-sm font-medium cursor-pointer duration-250"
+          id="btn-login"
+        >
+          Login
+      </button>
+      @end
     </div>
 
     <button id="menu-btn" class="md:hidden p-2 text-gray-600">
@@ -44,12 +54,21 @@
         href="{{ request.url() == '/' ? '#fitur' : route('landing') + '#fitur' }}"
         class="text-gray-700 font-medium hover:text-gray-900"
       >Fitur</a>
-      <button
-        class="px-6 py-2 bg-[--color-primary] text-gray-800 hover:bg-[#8bb4b1] rounded-full shadow-sm font-medium transition-all cursor-pointer duration-250"
-        id="btn-login"
-      >
-        Buat Profil
+      @if(auth.isAuthenticated)
+        <button
+          class="px-6 py-2 bg-[--color-primary] text-gray-800 hover:bg-[#8bb4b1] rounded-full shadow-sm font-medium transition-all cursor-pointer duration-250"
+          id="btn-login"
+        >
+          Profil
     </button>
+      @else
+        <button
+          class="px-6 py-2 bg-[--color-primary] text-gray-800 hover:bg-[#8bb4b1] rounded-full shadow-sm font-medium transition-all cursor-pointer duration-250"
+          id="btn-login"
+        >
+          Login
+    </button>
+      @end
     </div>
   </div>
 </nav>

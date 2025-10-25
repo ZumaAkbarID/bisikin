@@ -1,17 +1,18 @@
 import { DateTime } from 'luxon'
 import { BaseModel, beforeCreate, belongsTo, column } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import User from '#models/user'
 import { randomUUID } from 'node:crypto'
+import User from '#models/user'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import type { ActivityAction } from '#constants/activity_actions'
 
-export default class Subscription extends BaseModel {
+export default class ActivityLog extends BaseModel {
   static selfAssignPrimaryKey = true
 
   @column({ isPrimary: true })
   declare id: string
 
   @beforeCreate()
-  static assignUuid(table: Subscription) {
+  static assignUuid(table: ActivityLog) {
     table.id = randomUUID()
   }
 
@@ -19,16 +20,16 @@ export default class Subscription extends BaseModel {
   declare userId: string
 
   @column()
-  declare plan: 'free' | 'lifetime' | 'rich'
+  declare action: ActivityAction
 
   @column()
-  declare status: 'active' | 'inactive' | 'canceled'
+  declare description: string | null
 
-  @column.dateTime()
-  declare startedAt: DateTime | null
+  @column()
+  declare ipAddress: string | null
 
-  @column.dateTime()
-  declare expiredAt: DateTime | null
+  @column()
+  declare userAgent: string | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

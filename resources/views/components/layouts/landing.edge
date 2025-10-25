@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrfToken }}" />
+
     <title>
       {{ title || config('master.appName') }}
     </title>
@@ -10,7 +12,7 @@
       {{{ await $slots.meta() }}}
     @endif
     <link
-      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600&display=rswap"
       rel="stylesheet"
     />
 

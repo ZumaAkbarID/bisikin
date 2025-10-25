@@ -1,16 +1,16 @@
 /// <reference lib="dom" />
 
+import axios from 'axios'
+
 console.log('Profile module initialized 🌿')
 
-// === Event bindings ===
 document
   .querySelectorAll('input[name="mode"]')
   .forEach((i) => i.addEventListener('change', handleModeChange))
 document.getElementById('message-form')?.addEventListener('submit', handleSubmit)
 
-handleModeChange() // initial state
+handleModeChange()
 
-// === Toast Notification ===
 function showToast(message: string, type = 'success') {
   const toast = document.getElementById('toast')
   const toastMessage = document.getElementById('toast-message')
@@ -22,10 +22,12 @@ function showToast(message: string, type = 'success') {
   if (type === 'error') toast.style.background = 'rgba(239, 68, 68, 0.9)'
   else toast.style.background = 'rgba(163, 201, 199, 0.9)'
 
-  setTimeout(() => toast.classList.remove('show'), 3000)
+  setTimeout(() => {
+    toast.classList.remove('show')
+    toast.style.background = ''
+  }, 3000)
 }
 
-// === Mode toggle (Anonim / Blak-blakan) ===
 function handleModeChange() {
   const modeInputs = document.querySelectorAll<HTMLInputElement>('input[name="mode"]')
   const clueField = document.getElementById('clue-field')!
@@ -42,7 +44,6 @@ function handleModeChange() {
   }
 }
 
-// === Handle form submission ===
 async function handleSubmit(e: Event) {
   e.preventDefault()
 
@@ -50,9 +51,9 @@ async function handleSubmit(e: Event) {
   const messageInput = document.getElementById('message-input') as HTMLTextAreaElement
   const clueInput = document.getElementById('clue-input') as HTMLInputElement
   const nameInput = document.getElementById('name-input') as HTMLInputElement
-  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement
   const submitText = document.getElementById('submit-text')!
   const submitSpinner = document.getElementById('submit-spinner')!
+  const username = document.querySelector('meta[name="data-username"]')!.getAttribute('content')
 
   const modeInputs = document.querySelectorAll<HTMLInputElement>('input[name="mode"]')
   const selected = Array.from(modeInputs).find((i) => i.checked)?.value
@@ -62,7 +63,6 @@ async function handleSubmit(e: Event) {
   const clue = clueInput.value.trim()
   const sender = nameInput.value.trim()
 
-  // === Validasi ===
   if (!message) {
     showToast('Pesan tidak boleh kosong!', 'error')
     return
@@ -71,34 +71,61 @@ async function handleSubmit(e: Event) {
     showToast('Nama harus diisi untuk mode blak-blakan!', 'error')
     return
   }
+  if (message.length < 10) {
+    showToast('Pesan harus terdiri dari minimal 10 karakter!', 'error')
+    return
+  } else if (message.length > 1000) {
+    showToast('Pesan tidak boleh lebih dari 1000 karakter!', 'error')
+    return
+  }
 
-  // === Disable all inputs saat kirim ===
   const allInputs = form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
     'input, textarea, button'
   )
   allInputs.forEach((el) => (el.disabled = true))
 
-  // Spinner on
   submitSpinner.classList.remove('hidden')
   submitSpinner.classList.add('inline-block')
   submitText.innerText = 'Mengirim...'
 
   try {
-    // Simulasi kirim (nanti bisa diganti fetch API)
-    await new Promise((r) => setTimeout(r, 1500))
+    const res = await axios.post(`/@${username}`, {
+      message,
+      clue: isAnonymous ? clue || null : null,
+      sender: isAnonymous ? null : sender,
+      isAnonymous,
+    })
 
-    // Reset form
-    messageInput.value = ''
-    clueInput.value = ''
-    nameInput.value = ''
-    handleModeChange()
+    console.log(res)
 
-    showToast('Pesan berhasil dikirim! 🌿')
+    if (res.status === 200) {
+      messageInput.value = ''
+      clueInput.value = ''
+      nameInput.value = ''
+      handleModeChange()
+
+      showToast('Pesan berhasil dikirim! 🌿')
+    } else {
+      showToast('Gagal mengirim pesan, coba lagi.', 'error')
+    }
   } catch (err) {
     console.error(err)
+    if (axios.isAxiosError(err) && err.response) {
+      const status = err.response.status
+      if (status === 422) {
+        showToast('Validasi gagal. Periksa kembali input Anda.', 'error')
+        return
+      } else if (status === 429) {
+        showToast(
+          `Terlalu banyak permintaan. Coba lagi dalam ${Math.round(err.response.data.errors[0].retryAfter / 60)} menit.`,
+          'error'
+        )
+        return
+      }
+    }
+
     showToast('Gagal mengirim pesan, coba lagi.', 'error')
   } finally {
-    // Balikin semua input
     allInputs.forEach((el) => (el.disabled = false))
     submitText.innerText = 'Kirim Pesan'
     submitSpinner.classList.add('hidden')

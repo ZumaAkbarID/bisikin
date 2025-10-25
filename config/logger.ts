@@ -17,7 +17,29 @@ const loggerConfig = defineConfig({
       transport: {
         targets: targets()
           .pushIf(!app.inProduction, targets.pretty())
-          .pushIf(app.inProduction, targets.file({ destination: 1 }))
+          .pushIf(app.inProduction, targets.file({ destination: 'logs/app.log' }))
+          .toArray(),
+      },
+    },
+    activity_log: {
+      enabled: true,
+      name: 'activity_log',
+      level: 'info',
+      transport: {
+        targets: targets()
+          .pushIf(!app.inProduction, targets.pretty())
+          .pushIf(app.inProduction, targets.file({ destination: 'logs/activity.log' }))
+          .toArray(),
+      },
+    },
+    login_log: {
+      enabled: true,
+      name: 'login_log',
+      level: 'info',
+      transport: {
+        targets: targets()
+          .pushIf(!app.inProduction, targets.pretty())
+          .pushIf(app.inProduction, targets.file({ destination: 'logs/login.log' }))
           .toArray(),
       },
     },

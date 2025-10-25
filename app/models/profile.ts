@@ -1,8 +1,13 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeCreate, column } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeCreate, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import { randomUUID } from 'node:crypto'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import User from '#models/user'
+import Message from '#models/message'
+import { compose } from '@adonisjs/core/helpers'
+import { SoftDeletes } from 'adonis-lucid-soft-deletes'
 
-export default class Profile extends BaseModel {
+export default class Profile extends compose(BaseModel, SoftDeletes) {
   static selfAssignPrimaryKey = true
 
   @column({ isPrimary: true })
@@ -36,4 +41,13 @@ export default class Profile extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @column.dateTime()
+  declare deletedAt: DateTime | null
+
+  @belongsTo(() => User)
+  declare user: BelongsTo<typeof User>
+
+  @hasMany(() => Message)
+  declare messages: HasMany<typeof Message>
 }
