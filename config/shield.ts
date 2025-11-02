@@ -6,9 +6,45 @@ const shieldConfig = defineConfig({
    * to learn more
    */
   csp: {
-    enabled: false,
-    directives: {},
+    enabled: true,
     reportOnly: false,
+    directives: {
+      defaultSrc: ["'self'"],
+
+      // ✅ Script — Allow inline via nonce, and Cloudflare Turnstile scripts
+      scriptSrc: [
+        "'self'",
+        '@nonce',
+        "'unsafe-inline'", // (optional, buat dev biar gak ribet)
+        'https://challenges.cloudflare.com',
+        'https://*.challenges.cloudflare.com',
+      ],
+
+      // ✅ Frame/Iframe — Allow Turnstile iframe
+      frameSrc: [
+        "'self'",
+        'https://challenges.cloudflare.com',
+        'https://*.challenges.cloudflare.com',
+      ],
+
+      // ✅ Styles — Google Fonts, Tailwind inline
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      styleSrcElem: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+
+      // ✅ Fonts — Google Fonts CDN
+      fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
+
+      // ✅ Images — Cloudflare, svgrepo, data-URI
+      imgSrc: ["'self'", 'data:', 'https://challenges.cloudflare.com', 'https://www.svgrepo.com'],
+
+      // ✅ Connections (AJAX, WebSocket)
+      connectSrc: [
+        "'self'",
+        'https://challenges.cloudflare.com',
+        'https://*.challenges.cloudflare.com',
+        'wss://*.ngrok-free.dev', // kalau lo develop via ngrok/vite
+      ],
+    },
   },
 
   /**

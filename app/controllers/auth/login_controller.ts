@@ -1,21 +1,26 @@
 import { ActivityActions } from '#constants/activity_actions'
 import Profile from '#models/profile'
+import Subscription from '#models/subscription'
 import User from '#models/user'
 import ActivityLogger from '#services/activity_logger'
 import ProfileService from '#services/profile'
 import type { HttpContext } from '@adonisjs/core/http'
 import logger from '@adonisjs/core/services/logger'
+import { DateTime } from 'luxon'
 
 const provider = 'google'
 
 export default class LoginController {
-  async redirect({ ally }: HttpContext) {
+  async redirect({ ally, request, session }: HttpContext) {
+    if (request.qs().redirectUrl) {
+      session.put('redirectUrl', request.qs().redirectUrl)
+    }
     const driverInstance = ally.use(provider).stateless()
     return driverInstance.redirect()
   }
 
   async handleCallback(ctx: HttpContext) {
-    const { ally, auth, response } = ctx
+    const { ally, auth, response, session } = ctx
 
     const googleUser = ally.use(provider).stateless()
 
@@ -57,12 +62,14 @@ export default class LoginController {
         }
       )
 
-      if (!existingUser.$hasRelated('profile')) {
+      await existingUser.load('profile')
+
+      if (!existingUser.profile) {
         let username = `${user.name.replace(/\s+/g, '').toLowerCase()}`
 
         await ProfileService.checkUsernameAvailability(username).then(async (isAvailable) => {
           let suffix = 1
-          while (!isAvailable) {
+          while (!isAvailable.available) {
             username = `${username}${suffix}`
             isAvailable = await ProfileService.checkUsernameAvailability(username)
             suffix++
@@ -85,7 +92,25 @@ export default class LoginController {
         await ActivityLogger.log(ctx, ActivityActions.LOGIN, 'User logged in via Google OAuth')
       }
 
+      await existingUser.load('subscriptions')
+
+      if (!existingUser.subscriptions) {
+        await Subscription.create({
+          userId: existingUser.id,
+          plan: 'free',
+          status: 'active',
+          startedAt: DateTime.now(),
+          expiredAt: null,
+        })
+      }
+
       await auth.use('web').login(existingUser, true)
+
+      if (session.has('redirectUrl')) {
+        const redirectUrl = session.get('redirectUrl')!
+        session.forget('redirectUrl')
+        return response.redirect().toPath(redirectUrl)
+      }
 
       return response.redirect().toRoute('landing')
     } catch (error) {

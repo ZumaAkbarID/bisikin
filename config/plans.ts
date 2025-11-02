@@ -1,14 +1,27 @@
 export default {
   free: {
-    message_limit: 50,
-    features: ['basic_profile'],
+    price: 0,
+    features: ['profile', 'unlimited_messages', 'basic_themes'],
   },
   lifetime: {
-    message_limit: 500,
-    features: ['custom_theme', 'stats', 'message_blur_toggle'],
+    price: 15000,
+    features: [
+      'profile',
+      'unlimited_messages',
+      'customization_theme',
+      'ai_analytics',
+      'api_access',
+    ],
   },
   rich: {
-    message_limit: 5000,
-    features: ['everything', 'reply_to_messages'],
+    price: 30000,
+    features: [
+      'profile',
+      'unlimited_messages',
+      'customization_theme',
+      'ai_analytics',
+      'api_access',
+      'hall_of_fame',
+    ],
   },
 }

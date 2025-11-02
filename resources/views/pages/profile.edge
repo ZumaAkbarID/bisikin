@@ -1,8 +1,31 @@
 @layouts.landing({ title: `Bisikin ke ${profile.username} 🌿` })
   @slot('meta')
     <meta name="data-username" content="{{ profile.username }}" />
-    <meta name="description" content="Profile page" />
     <meta name="data-page" content="profile" />
+    <meta name="turnstile_token" content="" />
+
+    <meta name="title" content="Bisikin ke {{ profile.username }} 🌿" />
+    <meta name="description" content="{{ profile.bio || 'Kirim aku sebuah bisikin!' }}" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ route('profile', [profile.username]) }}" />
+    <meta property="og:title" content="Bisikin ke {{ profile.username }} 🌿" />
+    <meta property="og:description" content="{{ profile.bio || 'Kirim aku sebuah bisikin!' }}" />
+    <meta
+      property="og:image"
+      content="{{ profile.avatar.startsWith('http') ? profile.avatar : config('app.appUrl') + profile.avatar }}"
+    />
+
+    <!-- X (Twitter) -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="{{ route('profile', [profile.username]) }}" />
+    <meta property="twitter:title" content="Bisikin ke {{ profile.username }} 🌿" />
+    <meta property="twitter:description" content="{{ profile.bio || 'Kirim aku sebuah bisikin!' }}" />
+    <meta
+      property="twitter:image"
+      content="{{ profile.avatar.startsWith('http') ? profile.avatar : config('app.appUrl') + profile.avatar }}"
+    />
   @endslot
   
   @slot('main')
@@ -12,6 +35,18 @@
         <div
           class="bg-white/30 backdrop-blur-sm rounded-2xl p-8 shadow-sm text-center animate-fade-in-up glow-soft"
         >
+
+          <button
+            id="share-profile-btn"
+            type="button"
+            class="absolute top-4 right-4 p-2 rounded-full bg-blue-500/40 hover:bg-blue-500/60 backdrop-blur-sm shadow-sm transition-all duration-300 group cursor-pointer"
+            title="Bagikan profil"
+          >
+            @svg('heroicons:share', {
+            class: 'w-5 h-5 text-gray-600 group-hover:text-white transition-colors duration-200'
+            })
+          </button>
+
           @if(profile.avatar)
             <img
               id="profile-avatar"
@@ -26,102 +61,152 @@
               🌿
             </div>
           @end
+          
           <h1 id="profile-username" class="text-2xl font-medium text-gray-700 mb-3">
             {{ '@' + profile.username }}
+            @if(isOwner)
+              @svg('heroicons:pencil-square', {
+              width: 40,
+              height: 40,
+              class: 'inline-block text-gray-400 hover:text-gray-600 cursor-pointer w-5 h-5 transition-all duration-300 ease-out',
+              id: 'edit-profile-btn'
+              })
+            @end
           </h1>
-          <p id="profile-bio" class="text-gray-600 font-light leading-relaxed max-w-md mx-auto">
+
+          <p
+            id="profile-bio"
+            class="text-gray-600 font-light leading-relaxed max-w-md mx-auto mb-6"
+            @if(!isOwner)
+            id="list-message"
+            @end
+          >
             "{{ profile.bio || 'Belum ada bio' }}"
           </p>
-        </div>
 
-        <!-- Message Form -->
-        <div class="bg-white/30 backdrop-blur-sm rounded-2xl p-8 shadow-sm animate-slide-up glow-soft">
-          <h2 id="form-title" class="text-xl font-medium text-gray-700 mb-6 text-center">
-            Kirim pesan ke {{ profile.username }}
-          </h2>
-
-          <form id="message-form" class="space-y-6">
-            {{ csrfField() }}
-            <!-- Textarea -->
-            <div>
-              <textarea
-                id="message-input"
-                placeholder="Tulis pesanmu di sini..."
-                class="w-full h-32 p-4 bg-white/40 backdrop-blur-sm rounded-xl border-0 resize-none focus:outline-none focus:ring-2 focus:ring-[--color-primary]/50 text-gray-700 placeholder-gray-500"
-                required
-              ></textarea>
-            </div>
-
-            <!-- Mode Toggle -->
-            <div class="space-y-4">
-              <div class="flex justify-center">
-                <div class="relative inline-flex bg-white/40 backdrop-blur-md rounded-full p-1 shadow-inner">
-                  <!-- Anonim -->
-                  <label class="cursor-pointer">
-                    <input type="radio" name="mode" value="anonymous" checked class="hidden peer" />
-                    <div
-                      class="peer-checked:bg-[--color-primary] peer-checked:text-gray-800 text-gray-600 px-6 py-2 rounded-full transition-all duration-300 ease-out font-medium hover:text-gray-700"
-                    >
-                      🎭 Anonim
-                    </div>
-                  </label>
-
-                  <!-- Blak-blakan -->
-                  <label class="cursor-pointer">
-                    <input type="radio" name="mode" value="open" class="hidden peer" />
-                    <div
-                      class="peer-checked:bg-[--color-primary] peer-checked:text-gray-800 text-gray-600 px-6 py-2 rounded-full transition-all duration-300 ease-out font-medium hover:text-gray-700"
-                    >
-                      💬 Blak-blakan
-                    </div>
-                  </label>
-
-                  <!-- highlight glow -->
-                  <div
-                    class="absolute inset-0 rounded-full pointer-events-none border border-white/30 shadow-[inset_0_1px_4px_rgba(255,255,255,0.2)]"
-                  >
-                  </div>
-                </div>
-              </div>
-
-              <div id="clue-field" class="mode-transition">
-                <input
-                  id="clue-input"
-                  type="text"
-                  placeholder="Kasih petunjuk kecil... (opsional)"
-                  class="w-full p-3 bg-white/40 backdrop-blur-sm rounded-xl border-0 focus:outline-none focus:ring-2 focus:ring-[--color-primary]/50 text-gray-700 placeholder-gray-500"
-                />
-              </div>
-
-              <div id="name-field" class="mode-transition hidden">
-                <input
-                  id="name-input"
-                  type="text"
-                  placeholder="Nama kamu..."
-                  class="w-full p-3 bg-white/40 backdrop-blur-sm rounded-xl border-0 focus:outline-none focus:ring-2 focus:ring-[--color-primary]/50 text-gray-700 placeholder-gray-500"
-                />
-              </div>
-            </div>
-
-            <!-- Submit -->
-            <div class="text-center">
+          @if(isOwner)
+            <form action="{{ route('auth.logout') }}" method="POST" class="inline-block">
+              {{ csrfField() }}
               <button
                 type="submit"
-                id="submit-btn"
-                class="bg-[--color-primary] hover:bg-[#8bb4b1] text-gray-800 font-medium px-8 py-3 rounded-full shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                class="group relative inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-medium text-white bg-red-600/40 backdrop-blur-md hover:bg-red-600/60 hover:shadow-lg transition-all duration-300 ease-out cursor-pointer"
               >
-                <span id="submit-text">Kirim Pesan</span>
-                <div
-                  id="submit-spinner"
-                  class="loading-spinner w-5 h-5 border-2 border-gray-800 border-t-transparent rounded-full hidden ml-2 justify-items-center"
-                >
-                </div>
+                @svg('heroicons:arrow-left-on-rectangle', {
+                class: 'w-5 h-5 text-white hover:text-gray-800 group-hover:translate-x-[-2px] transition-transform'
+                })
+                <span class="group-hover:text-gray-800 transition-colors">Logout</span>
+
+                <span
+                  class="absolute inset-0 rounded-xl bg-gradient-to-r from-[--color-primary] to-[--color-secondary] opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+                ></span>
               </button>
-            </div>
-          </form>
+            </form>
+          @end
         </div>
 
-        <!-- Message Preview -->
+        @if(!isOwner)
+          <!-- Message Form -->
+          <div class="bg-white/30 backdrop-blur-sm rounded-2xl p-8 shadow-sm animate-slide-up glow-soft">
+            <h2 id="form-title" class="text-xl font-medium text-gray-700 mb-6 text-center">
+              Kirim pesan ke {{ profile.username }}
+            </h2>
+
+            <form id="message-form" class="space-y-6">
+              {{ csrfField() }}
+              <!-- Textarea -->
+              <div>
+                <textarea
+                  id="message-input"
+                  placeholder="Tulis pesanmu di sini..."
+                  class="w-full h-32 p-4 bg-white/40 backdrop-blur-sm rounded-xl border-0 resize-none focus:outline-none focus:ring-2 focus:ring-[--color-primary]/50 text-gray-700 placeholder-gray-500"
+                  required
+                ></textarea>
+              </div>
+
+              <!-- Mode Toggle -->
+              <div class="space-y-4" @if(!isOwner)
+                id="list-message"
+@end>
+                <div class="flex justify-center">
+                  <div class="relative inline-flex bg-white/40 backdrop-blur-md rounded-full p-1 shadow-inner">
+                    <!-- Anonim -->
+                    <label class="cursor-pointer">
+                      <input type="radio" name="mode" value="anonymous" checked class="hidden peer" />
+                      <div
+                        class="peer-checked:bg-[--color-primary] peer-checked:text-gray-800 text-gray-600 px-6 py-2 rounded-full transition-all duration-300 ease-out font-medium hover:text-gray-700"
+                      >
+                        🎭 Anonim
+                      </div>
+                    </label>
+
+                    <!-- Blak-blakan -->
+                    <label class="cursor-pointer">
+                      <input type="radio" name="mode" value="open" class="hidden peer" />
+                      <div
+                        class="peer-checked:bg-[--color-primary] peer-checked:text-gray-800 text-gray-600 px-6 py-2 rounded-full transition-all duration-300 ease-out font-medium hover:text-gray-700"
+                      >
+                        💬 Blak-blakan
+                      </div>
+                    </label>
+
+                    <!-- highlight glow -->
+                    <div
+                      class="absolute inset-0 rounded-full pointer-events-none border border-white/30 shadow-[inset_0_1px_4px_rgba(255,255,255,0.2)]"
+                    >
+                    </div>
+                  </div>
+                </div>
+
+                <div id="clue-field" class="mode-transition">
+                  <input
+                    id="clue-input"
+                    type="text"
+                    placeholder="Kasih petunjuk kecil... (opsional)"
+                    class="w-full p-3 bg-white/40 backdrop-blur-sm rounded-xl border-0 focus:outline-none focus:ring-2 focus:ring-[--color-primary]/50 text-gray-700 placeholder-gray-500"
+                  />
+                </div>
+
+                <div id="name-field" class="mode-transition hidden">
+                  <input
+                    id="name-input"
+                    type="text"
+                    placeholder="Nama kamu..."
+                    class="w-full p-3 bg-white/40 backdrop-blur-sm rounded-xl border-0 focus:outline-none focus:ring-2 focus:ring-[--color-primary]/50 text-gray-700 placeholder-gray-500"
+                  />
+                </div>
+
+                <div
+                  class="cf-turnstile max-w-xs mx-auto"
+                  data-sitekey="{{ config('app.cloudflareTurnstile.siteKey') }}"
+                  data-theme="light"
+                  data-size="flexible"
+                  data-callback="onTurnstileSuccess"
+                  data-error-callback="onTurnstileError"
+                  data-expired-callback="onTurnstileExpired"
+                >
+                </div>
+              </div>
+
+              <!-- Submit -->
+              <div class="text-center">
+                <button
+                  type="submit"
+                  id="submit-btn"
+                  class="bg-[--color-primary] hover:bg-[#8bb4b1] text-gray-800 font-medium px-8 py-3 rounded-full shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  disabled
+                >
+                  <span id="submit-text">Kirim Pesan</span>
+                  <div
+                    id="submit-spinner"
+                    class="loading-spinner w-5 h-5 border-2 border-gray-800 border-t-transparent rounded-full hidden ml-2 justify-items-center"
+                  >
+                  </div>
+                </button>
+              </div>
+            </form>
+          </div>
+        @end
+        
         <div class="animate-fade-in-up-more-delayed">
           <h3 class="text-xl font-light text-gray-700 mb-6 text-center">
             Beberapa bisikan yang sudah dikirim 🌿
@@ -133,24 +218,76 @@
             <div id="messages-grid" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               @each((message, index) in messages)
                 <div
-                  class="message-card bg-white/20 backdrop-blur-lg rounded-xl p-4 text-gray-700 italic blur-message 
+                  class="message-card bg-white/20 backdrop-blur-lg {{ !isOwner ? 'blur-message' : '' }} rounded-xl p-4 text-gray-700 italic cursor-pointer 
           {{ index % 3 === 0 ? 'animate-floating' : index % 3 === 1 ? 'animate-floating-delayed' : 'animate-floating-more-delayed' }}"
                   style="animation-delay: {{ index * 0.1 }}s;"
+                  @if(!isOwner)
+                  data-message="🔒 Pesan terkunci. Upgrade ke Bisikin Premium untuk melihat pesan profil lain!"
+                  data-sender="🔒 Terkunci rapat"
+                  data-clue=""
+                  @end
+                  @if(isOwner || isPremium)
+                    data-message="{{ message.message }}"
+                    data-sender="{{ message.isAnonymous ? '🎭 Anonim' : '💬 ' + (message.senderName || 'Blak-blakan') }}"
+                    data-clue="{{ message.clue || '' }}"
+                    data-sent-at="{{ message.createdAt || '' }}"
+                  @end
+                  @if(isOwner)
+                    data-ip-address="{{ message.ipAddress || '' }}"
+                    data-sent-at="{{ message.createdAt || '' }}"
+                    data-ua="{{ message.userAgent || '' }}"
+                  @end
                 >
                   <p class="line-clamp-3 mb-3">
-                    "{{ message.message }}"
+                    "{{ isOwner || isPremium ? message.message : '🔒 Pesan terkunci. Upgrade ke Bisikin Premium untuk melihatnya!' }}"
                   </p>
                   <div class="text-xs text-gray-500 flex items-center justify-between">
-                    <span>
-                      {{ message.isAnonymous ? '🎭 Anonim' : '💬 ' + (message.senderName || 'Blak-blakan') }}
+                    <span class="line-clamp-1">
+                      {{ isOwner || isPremium ? message.isAnonymous ? '🎭 Anonim' : '💬 ' + (message.senderName || 'Blak-blakan') : '🔒' }}
             </span>
-
                     @if(message.clue)
-                      <span class="text-[--color-primary]">💡 {{ message.clue }}</span>
+                      <span class="text-[--color-primary] line-clamp-1">💡 {{ isOwner || isPremium ? message.clue : '' }}</span>
                     @endif
                   </div>
                 </div>
               @endeach
+            </div>
+
+            <div class="mt-8 text-center space-y-3">
+              <p class="text-sm text-gray-500">
+                Halaman <span class="font-medium">{{ pagination.currentPage }} </span>dari
+      <span class="font-medium">{{ pagination.lastPage }} </span>                <br />
+                Menampilkan <span class="font-medium">{{ pagination.perPage }} </span>pesan per halaman
+      (total <span class="font-medium">{{ pagination.total }} </span>pesan)
+              </p>
+
+              <div class="inline-flex items-center space-x-1">
+                @if(pagination.currentPage > 1)
+                  <a
+                    href="?page={{ pagination.currentPage - 1 }}#list-message"
+                    class="px-3 py-1 text-sm rounded-lg bg-white/20 hover:bg-white/40 text-gray-700 transition"
+                  >
+                    ← Prev
+        </a>
+                @else
+                  <span class="px-3 py-1 text-sm rounded-lg bg-gray-300/30 text-gray-400 cursor-not-allowed">
+                    ← Prev
+        </span>
+                @endif
+                
+                @if(pagination.currentPage < pagination.lastPage)
+                  <a
+                    href="?page={{ pagination.currentPage + 1 }}#list-message"
+                    class="px-3 py-1 text-sm rounded-lg bg-white/20 hover:bg-white/40 text-gray-700 transition"
+                  >
+                    Next →
+        </a>
+                @else
+                  <span class="px-3 py-1 text-sm rounded-lg bg-gray-300/30 text-gray-400 cursor-not-allowed">
+                    Next →
+        </span>
+                @endif
+              </div>
             </div>
           @else
             <div id="no-messages" class="text-center py-12">
@@ -167,34 +304,192 @@
           @endif
         </div>
 
-        <div class="relative z-10 mt-20 text-center">
-          <div
-            class="max-w-lg mx-auto bg-white/30 backdrop-blur-md rounded-2xl px-6 py-8 shadow-sm border border-white/40 glow-soft"
-          >
-            <div class="mb-4 text-3xl animate-floating">
-              🌿
-            </div>
-            <p class="text-gray-700 font-light leading-relaxed text-sm md:text-base mb-4">
-              Ingin punya ruang bisikan seperti ini?  
-      <br />
-              Ciptakan milikmu sendiri dan dengarkan cerita orang lain 🍃
-            </p>
-
-            <a
-              href="/"
-              class="inline-block mt-3 px-6 py-2.5 rounded-full bg-[--color-primary] text-gray-800 font-medium hover:bg-[#8bb4b1] transition-all shadow-sm"
-            >
-              Buat Profil
-    </a>
-          </div>
-        </div>
+        @!component('components/create_profile')
 
       </div>
     </div>
 
-    <!-- Toast -->
     <div id="toast" class="toast">
       <span id="toast-message"></span>
     </div>
+
+    @if(isOwner)
+      <div
+        id="edit-profile-modal"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      >
+        <div
+          class="bg-white rounded-2xl shadow-lg w-full max-w-md mx-4 p-6 relative transition-opacity duration-500"
+        >
+          <button
+            type="button"
+            id="close-edit-modal"
+            class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 cursor-pointer"
+          >
+            ✕
+      </button>
+
+          <h2 class="text-xl font-medium text-gray-700 mb-4">
+            Edit Profil 🌿
+          </h2>
+
+          <form
+            action="{{ route('profile.update') }}"
+            method="POST"
+            enctype="multipart/form-data"
+            class="space-y-4"
+          >
+            {{ csrfField() }}
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative">
+                <img
+                  id="preview-avatar"
+                  src="{{ profile.avatar || '/images/default-avatar.png' }}"
+                  alt="Preview Avatar"
+                  class="w-24 h-24 rounded-full object-cover border shadow-sm"
+                />
+
+                <label
+                  for="avatar-input"
+                  class="absolute bottom-0 right-0 bg-[#a3c9c7] hover:opacity-90 text-white p-1.5 rounded-full shadow cursor-pointer transition-all duration-300 ease-out"
+                  title="Ganti foto"
+                >
+                  @svg('heroicons:camera', {
+                  class: 'w-4 h-4',
+                  })
+                </label>
+              </div>
+
+              <input id="avatar-input" name="avatar" type="file" accept="image/*" class="hidden" />
+            </div>
+
+            <div>
+              <label class="block text-sm text-gray-600 mb-1">Username</label>
+
+              <div
+                class="flex items-center border border-gray-300 rounded-lg focus-within:ring-[--color-primary] focus-within:border-[--color-primary] overflow-hidden transition"
+              >
+                <span class="pl-3 text-gray-500 select-none">{{ '@' }}</span>
+                <input
+                  id="username-input"
+                  name="username"
+                  type="text"
+                  value="{{ profile.username }}"
+                  maxlength="30"
+                  class="flex-1 pr-3 py-2 outline-none text-gray-700"
+                  placeholder="username"
+                  autocomplete="off"
+                />
+              </div>
+
+              <p id="username-feedback" class="mt-1 text-xs text-gray-500">
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-sm text-gray-600 mb-1">Bio</label>
+              <div class="flex flex-col">
+                <textarea
+                  name="bio"
+                  rows="3"
+                  id="bio-input"
+                  class="w-full rounded-lg border border-gray-300 px-3 pt-2 focus:ring-[#a3c9c7] focus:border-[#a3c9c7] outline-none resize-none"
+                  maxlength="160"
+                >{{ profile.bio || '' }}</textarea>
+                <small class="text-end mt-0 text-gray-500">maks. 160 karakter</small>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-2 mt-6">
+              <button
+                type="button"
+                id="cancel-edit"
+                class="px-4 py-2 rounded-lg bg-gray-200 text-gray-600 hover:bg-gray-300 transition cursor-pointer"
+              >Batal</button>
+              <button
+                type="submit"
+                class="px-4 py-2 rounded-lg bg-[#a3c9c7] text-white hover:opacity-90 transition cursor-pointer"
+              >Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    @endif
+    
+    <div
+      id="message-modal"
+      class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-white rounded-2xl shadow-lg max-w-md w-full mx-4 p-6 relative transition-opacity duration-500"
+      >
+        <button id="close-modal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 cursor-pointer">
+          ✕
+    </button>
+        <p id="modal-message" class="text-gray-700 italic mb-4">
+        </p>
+        <div class="text-xs text-gray-500 flex items-center justify-between">
+          <span id="modal-sender"></span>
+          <span id="modal-clue" class="text-[--color-primary]"></span>
+        </div>
+        <div class="text-xs text-gray-500 flex items-center justify-between mt-2">
+          <span id="modal-sent-at"></span>
+        </div>
+        @if(isOwner)
+          <div class="relative max-w-2xl mx-auto py-6">
+            <div class="relative py-1 border-b border-gray-900/20">
+              <input type="checkbox" name="accordion-1" id="a1" class="absolute opacity-0 z-0 peer" />
+              <label
+                for="a1"
+                class="flex justify-between py-4 cursor-pointer after:w-[24px] after:h-[24px] after:min-w-[24px] after:min-h-[24px] after:opacity-40 after:bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNoZXZyb24tZG93biI+PHBhdGggZD0ibTYgOSA2IDYgNi02Ii8+PC9zdmc+')] after:transition-all after:duration-300 peer-checked:after:rotate-180 "
+              >
+                <span class="text-sm font-medium">Informasi Device</span>
+              </label>
+              <div class="overflow-hidden max-h-0 transition-all duration-500 peer-checked:max-h-[80rem]">
+                <div class="pb-6 text-gray-500">
+                  <span id="modal-ua"></span>
+                </div>
+              </div>
+            </div>
+            <div class="relative py-1 border-b border-gray-900/20">
+              <input type="checkbox" name="accordion-1" id="a2" class="absolute opacity-0 z-0 peer" />
+              <label
+                for="a2"
+                class="flex justify-between py-4 cursor-pointer after:w-[24px] after:h-[24px] after:min-w-[24px] after:min-h-[24px] after:opacity-40 after:bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNoZXZyb24tZG93biI+PHBhdGggZD0ibTYgOSA2IDYgNi02Ii8+PC9zdmc+')] after:transition-all after:duration-300 peer-checked:after:rotate-180 "
+              >
+                <span class="text-sm font-medium">Informasi IP</span>
+              </label>
+              <div class="overflow-hidden max-h-0 transition-all duration-500 peer-checked:max-h-[80rem]">
+                <div class="pb-6 text-gray-500">
+                  IP: <span id="modal-ip-address"></span>
+                  <br />
+                  <span id="modal-ip-scan"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        @end
+      </div>
+    </div>
   @endslot
+  
+  @slot('scripts')
+    <script nonce="{{ cspNonce }}">
+      function onTurnstileSuccess(token) {
+        document.getElementById("submit-btn").disabled = false;
+        const turnstileTokenMeta = document.querySelector('meta[name="turnstile_token"]');
+        if (turnstileTokenMeta) {
+          turnstileTokenMeta.setAttribute("content", token);
+        }
+      }
+
+      function onTurnstileError(errorCode) {
+        document.getElementById("submit-btn").disabled = true;
+      }
+
+      function onTurnstileExpired() {
+        document.getElementById("submit-btn").disabled = true;
+      }
+    </script>
+  @end
 @end

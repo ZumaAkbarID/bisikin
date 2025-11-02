@@ -10,7 +10,7 @@ export default defineConfig({
        * Entrypoints of your application. Each entrypoint will
        * result in a separate bundle.
        */
-      entrypoints: ['resources/css/app.css', 'resources/js/app.js'],
+      entrypoints: ['resources/css/app.css', 'resources/js/app.ts'],
 
       /**
        * Paths to watch and reload the browser on file change
@@ -18,4 +18,7 @@ export default defineConfig({
       reload: ['resources/views/**/*.edge'],
     }),
   ],
+  server: {
+    allowedHosts: ['localhost', '127.0.0.1', 'lythraceous-stevie-unethnologic.ngrok-free.dev'],
+  },
 })

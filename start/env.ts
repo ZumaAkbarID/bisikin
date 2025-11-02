@@ -17,6 +17,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   APP_KEY: Env.schema.string(),
   HOST: Env.schema.string({ format: 'host' }),
   LOG_LEVEL: Env.schema.string(),
+  APP_URL: Env.schema.string(),
 
   /*
   |----------------------------------------------------------
@@ -52,8 +53,22 @@ export default await Env.create(new URL('../', import.meta.url), {
   */
   LIMITER_STORE: Env.schema.enum(['redis', 'memory'] as const),
   REDIS_DB: Env.schema.number(),
-
   REDIS_HOST: Env.schema.string({ format: 'host' }),
   REDIS_PORT: Env.schema.number(),
-  REDIS_PASSWORD: Env.schema.string.optional()
+  REDIS_PASSWORD: Env.schema.string.optional(),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring the drive package
+  |----------------------------------------------------------
+  */
+  DRIVE_DISK: Env.schema.enum(['fs'] as const),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring the cloudflare turnstile
+  |----------------------------------------------------------
+  */
+  CF_TURNSTILE_SITE_KEY: Env.schema.string(),
+  CF_TURNSTILE_SECRET_KEY: Env.schema.string(),
 })

@@ -4,6 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="csrf-token" content="{{ csrfToken }}" />
+    <script
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+  async
+  defer
+  nonce="{{ cspNonce }}" 
+>
+
+    </script>
 
     <title>
       {{ title || config('master.appName') }}
@@ -18,6 +26,14 @@
 
     @vite(['resources/css/app.css','resources/js/app.ts'])
 
+    @flashMessage('errors')
+      <meta name="flash-errors" content="{{ $message.message }}" />
+    @end
+    
+    @flashMessage('success')
+      <meta name="flash-success" content="{{ $message.message }}" />
+    @end
+    
     @stack('head')
   </head>
   <body class="h-full overflow-x-hidden font-sans pt-24">
@@ -39,5 +55,8 @@
 
     @include('components/login_modal')
     @stack('scripts')
+    @if ($slots.scripts)
+      {{{ await $slots.scripts() }}}
+    @endif
   </body>
 </html>

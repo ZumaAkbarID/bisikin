@@ -11,6 +11,13 @@ import { defineConfig } from '@adonisjs/core/http'
  * changed. Therefore it is recommended to keep the app key secure.
  */
 export const appKey = new Secret(env.get('APP_KEY'))
+export const appUrl = env.get('APP_URL')
+
+export const cloudflareTurnstile = {
+  siteKey: env.get('CF_TURNSTILE_SITE_KEY'),
+  secretKey: env.get('CF_TURNSTILE_SECRET_KEY'),
+  verifyUrl: 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+}
 
 /**
  * The configuration settings used by the HTTP server

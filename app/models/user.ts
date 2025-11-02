@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeCreate, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeCreate, column, computed, hasMany, hasOne } from '@adonisjs/lucid/orm'
 import { randomUUID } from 'node:crypto'
 import Profile from '#models/profile'
 import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations'
@@ -54,4 +54,27 @@ export default class User extends compose(BaseModel, SoftDeletes) {
   declare activityLogs: HasMany<typeof ActivityLog>
 
   static rememberMeTokens = DbRememberMeTokensProvider.forModel(User)
+
+  @computed()
+  public get isUserPremium(): boolean {
+    const subs = this.subscriptions ?? []
+    return subs.some((sub) => sub.isActive)
+  }
+
+  @computed()
+  public get currentSubscription(): Subscription | null {
+    const subs = this.subscriptions ?? []
+
+    const activeSubs = subs
+      .filter((sub) => {
+        if (sub.plan === 'lifetime') return true
+        if (sub.plan === 'free') return false
+        if (sub.status !== 'active') return false
+        if (!sub.expiredAt) return false
+        return sub.expiredAt > DateTime.now()
+      })
+      .sort((a, b) => (b.expiredAt?.toMillis() ?? 0) - (a.expiredAt?.toMillis() ?? 0))
+
+    return activeSubs.length > 0 ? activeSubs[0] : null
+  }
 }

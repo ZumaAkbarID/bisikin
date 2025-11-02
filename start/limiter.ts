@@ -24,3 +24,13 @@ export const messageSendThrottle = limiter.define('messageSend', (ctx) => {
       error.setStatus(429).setMessage('Terlalu banyak mengirim pesan. Silakan coba lagi nanti.')
     })
 })
+
+export const checkUsernameThrottle = limiter.define('checkUsername', (ctx) => {
+  return limiter
+    .allowRequests(20)
+    .every('15 minutes')
+    .usingKey(`check_username_${ctx.request.ip()}`)
+    .limitExceeded((error) => {
+      error.setStatus(429).setMessage('Terlalu banyak permintaan. Silakan coba lagi nanti.')
+    })
+})

@@ -22,15 +22,24 @@
           id="hero-subtext"
           class="text-lg md:text-xl lg:text-2xl text-gray-600 mb-16 animate-fade-in-up max-w-3xl mx-auto leading-relaxed font-light"
         >
-          Bisikan adalah ruang anonim untuk berbagi pikiran, rahasia, dan perasaan — dengan privasi penuh.
+          Bisikin adalah ruang anonim untuk berbagi pikiran, rahasia, dan perasaan — dengan privasi penuh.
         </p>
 
-        <button
-          id="btn-login"
-          class="px-10 py-4 text-gray-800 font-medium text-lg rounded-xl glow-pulse shadow-lg cursor-pointer"
-        >
-          Buat Profil
+        @if(!auth.use('web').isAuthenticated)
+          <button
+            id="btn-login"
+            class="px-10 py-4 text-gray-800 font-medium text-lg rounded-xl glow-pulse shadow-lg cursor-pointer"
+          >
+            Buat Profil
         </button>
+        @else
+          <a
+            href="{{ route('profile', ['@' + auth.use('web').user?.profile.username]) }}"
+            class="px-10 py-4 text-gray-800 font-medium text-lg rounded-xl glow-pulse shadow-lg cursor-pointer"
+          >
+            Profil
+        </a>
+        @end
       </div>
     </section>
 
@@ -41,8 +50,10 @@
           Fitur Utama
         </h2>
 
-        <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
-          <div class="card-hover bg-white/30 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center">
+        <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-8 lg:gap-12">
+
+          {{-- 🔒 Privasi --}}
+          <div class="card-hover bg-white/30 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center relative">
             <div
               class="w-20 h-20 mx-auto mb-8 bg-white/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"
             >
@@ -56,6 +67,7 @@
             </p>
           </div>
 
+          {{-- 🧩 Clue System --}}
           <div class="card-hover bg-white/30 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center">
             <div
               class="w-20 h-20 mx-auto mb-8 bg-white/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"
@@ -70,6 +82,7 @@
             </p>
           </div>
 
+          {{-- 🌫️ Ghibli Vibe --}}
           <div class="card-hover bg-white/30 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center">
             <div
               class="w-20 h-20 mx-auto mb-8 bg-white/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"
@@ -83,6 +96,110 @@
               Desain yang tenang, lembut, dan menenangkan — seperti dunia Studio Ghibli.
             </p>
           </div>
+
+          {{-- ✉️ Unlimited Pesan --}}
+          <div class="card-hover bg-white/30 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center">
+            <div
+              class="w-20 h-20 mx-auto mb-8 bg-white/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"
+            >
+              <i data-lucide="infinity" class="w-10 h-10 text-gray-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-6">
+              ✉️ Unlimited Pesan
+            </h3>
+            <p class="text-gray-600 leading-relaxed font-light">
+              Kirim dan terima pesan tanpa batas — ruang ekspresi tanpa akhir 🌌.
+            </p>
+          </div>
+
+          {{-- 🧠 AI Sentiment (Coming Soon) --}}
+          <div
+            class="card-hover bg-white/20 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center relative overflow-hidden"
+          >
+            <span
+              class="absolute top-4 right-4 text-xs px-3 py-1 bg-yellow-200/70 text-yellow-800 rounded-full font-medium shadow-sm"
+            >
+              Coming Soon
+        </span>
+            <div
+              class="w-20 h-20 mx-auto mb-8 bg-white/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"
+            >
+              <i data-lucide="brain" class="w-10 h-10 text-gray-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-6">
+              🧠 AI Analisis Pesan
+            </h3>
+            <p class="text-gray-600 leading-relaxed font-light">
+              AI akan membantu menganalisis emosi di setiap pesan yang kamu terima, apakah positif, sedih, atau misterius.
+            </p>
+          </div>
+
+          {{-- 📊 Analisa Keseluruhan (Coming Soon) --}}
+          <div
+            class="card-hover bg-white/20 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center relative overflow-hidden"
+          >
+            <span
+              class="absolute top-4 right-4 text-xs px-3 py-1 bg-yellow-200/70 text-yellow-800 rounded-full font-medium shadow-sm"
+            >
+              Coming Soon
+        </span>
+            <div
+              class="w-20 h-20 mx-auto mb-8 bg-white/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"
+            >
+              <i data-lucide="bar-chart-3" class="w-10 h-10 text-gray-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-6">
+              📊 Analisis Keseluruhan
+            </h3>
+            <p class="text-gray-600 leading-relaxed font-light">
+              Lihat pola emosi dan jenis pesan secara keseluruhan — insight menarik tentang apa yang orang rasakan terhadapmu.
+            </p>
+          </div>
+
+          {{-- ⚙️ Public API (Coming Soon) --}}
+          <div
+            class="card-hover bg-white/20 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center relative overflow-hidden"
+          >
+            <span
+              class="absolute top-4 right-4 text-xs px-3 py-1 bg-yellow-200/70 text-yellow-800 rounded-full font-medium shadow-sm"
+            >
+              Coming Soon
+        </span>
+            <div
+              class="w-20 h-20 mx-auto mb-8 bg-white/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"
+            >
+              <i data-lucide="network" class="w-10 h-10 text-gray-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-6">
+              ⚙️ Public API
+            </h3>
+            <p class="text-gray-600 leading-relaxed font-light">
+              Akses API resmi untuk integrasi ke aplikasi lain — kirim pesan, analisis data, dan banyak lagi.
+            </p>
+          </div>
+
+          {{-- 💎 Subscription Plan (Coming Soon) --}}
+          <div
+            class="card-hover bg-white/20 rounded-2xl p-8 shadow-md backdrop-blur-sm text-center relative overflow-hidden"
+          >
+            <span
+              class="absolute top-4 right-4 text-xs px-3 py-1 bg-yellow-200/70 text-yellow-800 rounded-full font-medium shadow-sm"
+            >
+              Coming Soon
+  </span>
+            <div
+              class="w-20 h-20 mx-auto mb-8 bg-white/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"
+            >
+              <i data-lucide="gem" class="w-10 h-10 text-gray-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-6">
+              💎 Subscription Plan
+            </h3>
+            <p class="text-gray-600 leading-relaxed font-light">
+              Dukung proyek ini dan buka fitur eksklusif seperti analisis AI, kustomisasi tampilan, dan pengalaman tanpa batas.
+            </p>
+          </div>
+
         </div>
       </div>
     </section>
@@ -119,7 +236,7 @@
               Buat Profil Unik
             </h3>
             <p class="text-gray-600 font-light leading-relaxed">
-              Pilih username unik di bisikan.id/username dan personalisasi profil sesuai keinginan.
+              Pilih username unik di {{ config('app.appUrl') }}/username dan personalisasi profil sesuai keinginan.
             </p>
           </div>
 
@@ -150,6 +267,136 @@
               Kontrol privasimu sendiri dan nikmati pesan-pesan yang masuk dengan tenang.
             </p>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="subscription" class="relative z-10 px-4 md:px-12 lg:px-24 py-20">
+      <div class="max-w-6xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-gray-700 mb-6">
+          Subscription Plans
+        </h2>
+        <p class="text-gray-500 mb-16 font-light">
+          Dukung proyek ini dan buka fitur eksklusif seperti AI analytics, tema kustom, dan banyak lagi.  
+      <span class="text-yellow-600 font-medium">Coming Soon</span>🌿
+        </p>
+
+        <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+
+          <div
+            class="group relative bg-white/30 backdrop-blur-sm rounded-2xl p-8 shadow-md transition-all duration-300 hover:bg-white/40 flex flex-col"
+          >
+            <span
+              class="absolute top-4 right-4 text-xs px-3 py-1 bg-green-200/70 text-green-800 rounded-full font-medium shadow-sm"
+            >
+              Gratis
+        </span>
+            <h3 class="text-2xl font-semibold text-gray-700 mb-4">
+              🪶 Free
+            </h3>
+            <p class="text-gray-500 text-sm mb-6">
+              Rp 0 / selamanya
+            </p>
+            <ul class="text-gray-600 font-light space-y-2 mb-8 text-sm flex-1">
+              <li>
+                ✔️ Profil publik
+              </li>
+              <li>
+                ✔️ Unlimited pesan
+              </li>
+              <li>
+                ✔️ Tema dasar
+              </li>
+            </ul>
+            <button
+              disabled
+              class="mt-auto w-full py-2 rounded-lg bg-gray-300/60 text-gray-600 font-medium cursor-not-allowed"
+            >
+              Aktif Sekarang
+        </button>
+          </div>
+
+          <div
+            class="group relative bg-white/30 backdrop-blur-sm rounded-2xl p-8 shadow-md border-2 border-transparent hover:border-[--color-primary] transition-all duration-300 flex flex-col"
+          >
+            <span
+              class="absolute top-4 right-4 text-xs px-3 py-1 bg-yellow-200/70 text-yellow-800 rounded-full font-medium shadow-sm"
+            >
+              Coming Soon
+        </span>
+            <h3 class="text-2xl font-semibold text-gray-700 mb-4">
+              💫 Lifetime
+            </h3>
+            <p class="text-gray-500 text-sm mb-6">
+              Rp 15.000 / sekali bayar
+            </p>
+            <ul class="text-gray-600 font-light space-y-2 mb-8 text-sm flex-1">
+              <li>
+                ✔️ Profil publik
+              </li>
+              <li>
+                ✔️ Unlimited pesan
+              </li>
+              <li>
+                ✨ Tema kustom
+              </li>
+              <li>
+                🧠 AI Analytics
+              </li>
+              <li>
+                ⚙️ API Access
+              </li>
+            </ul>
+            <button
+              disabled
+              class="mt-auto w-full py-2 rounded-lg bg-gray-300/60 text-gray-600 font-medium cursor-not-allowed"
+            >
+              Coming Soon
+        </button>
+          </div>
+
+          <div
+            class="group relative bg-white/30 backdrop-blur-sm rounded-2xl p-8 shadow-md border-2 border-transparent hover:border-[--color-secondary] transition-all duration-300 flex flex-col"
+          >
+            <span
+              class="absolute top-4 right-4 text-xs px-3 py-1 bg-yellow-200/70 text-yellow-800 rounded-full font-medium shadow-sm"
+            >
+              Coming Soon
+        </span>
+            <h3 class="text-2xl font-semibold text-gray-700 mb-4">
+              👑 Rich
+            </h3>
+            <p class="text-gray-500 text-sm mb-6">
+              Rp 30.000 / sekali bayar
+            </p>
+            <ul class="text-gray-600 font-light space-y-2 mb-8 text-sm flex-1">
+              <li>
+                ✔️ Profil publik
+              </li>
+              <li>
+                ✔️ Unlimited pesan
+              </li>
+              <li>
+                ✨ Tema kustom
+              </li>
+              <li>
+                🧠 AI Analytics
+              </li>
+              <li>
+                ⚙️ API Access
+              </li>
+              <li>
+                🏆 Hall of Fame
+              </li>
+            </ul>
+            <button
+              disabled
+              class="mt-auto w-full py-2 rounded-lg bg-gray-300/60 text-gray-600 font-medium cursor-not-allowed"
+            >
+              Coming Soon
+        </button>
+          </div>
+
         </div>
       </div>
     </section>

@@ -1,0 +1,23 @@
+@if(!auth.use("web").isAuthenticated)
+  <div class="relative z-10 mt-20 text-center">
+    <div
+      class="max-w-lg mx-auto bg-white/30 backdrop-blur-md rounded-2xl px-6 py-8 shadow-sm border border-white/40 glow-soft"
+    >
+      <div class="mb-4 text-3xl animate-floating">
+        🌿
+      </div>
+      <p class="text-gray-700 font-light leading-relaxed text-sm md:text-base mb-4">
+        Ingin punya ruang bisikan seperti ini?  
+      <br />
+        Ciptakan milikmu sendiri dan dengarkan cerita orang lain 🍃
+      </p>
+
+      <button
+        id="btn-login"
+        class="inline-block mt-3 px-6 py-2.5 rounded-full bg-[--color-primary] text-gray-800 font-medium hover:bg-[#8bb4b1] transition-all shadow-sm cursor-pointer"
+      >
+        Buat Profil
+    </button>
+    </div>
+  </div>
+@end
