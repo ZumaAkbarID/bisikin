@@ -35,7 +35,14 @@ const shieldConfig = defineConfig({
       fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
 
       // ✅ Images — Cloudflare, svgrepo, data-URI
-      imgSrc: ["'self'", 'data:', 'https://challenges.cloudflare.com', 'https://www.svgrepo.com'],
+      imgSrc: [
+        "'self'",
+        'data:',
+        'blob:',
+        'https://lh3.googleusercontent.com',
+        'https://challenges.cloudflare.com',
+        'https://www.svgrepo.com',
+      ],
 
       // ✅ Connections (AJAX, WebSocket)
       connectSrc: [
