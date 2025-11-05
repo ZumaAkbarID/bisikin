@@ -12,12 +12,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup SSH key
-        uses: webfactory/ssh-agent@v0.8.1
+        uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Run remote deploy commands
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
@@ -28,6 +28,7 @@ jobs:
             cd /var/www/Bisikin
             git fetch origin main
             git reset --hard origin/main
+            git pull origin main
             npm i
             sudo /bin/systemctl restart bisikin.service
             echo "Deploy finished: $(date)"
