@@ -58,4 +58,4 @@ router
   .post('/:username', [MessagesController, 'sendMessage'])
   .where('username', regexUsername)
   .as('profile.sendMessage')
-// .use(messageSendThrottle)
+  .use(messageSendThrottle)
