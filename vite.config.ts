@@ -3,6 +3,14 @@ import adonisjs from '@adonisjs/vite/client'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
+  build: {
+    outDir: 'public/assets',
+    manifest: true,
+    rollupOptions: {
+      input: ['resources/js/app.ts', 'resources/css/app.css'],
+    },
+    chunkSizeWarningLimit: 1600,
+  },
   plugins: [
     tailwindcss(),
     adonisjs({
@@ -19,6 +27,11 @@ export default defineConfig({
     }),
   ],
   server: {
-    allowedHosts: ['localhost', '127.0.0.1', 'lythraceous-stevie-unethnologic.ngrok-free.dev'],
+    allowedHosts: [
+      'localhost',
+      '127.0.0.1',
+      'lythraceous-stevie-unethnologic.ngrok-free.dev',
+      'bisikin.rwa.my.id',
+    ],
   },
 })

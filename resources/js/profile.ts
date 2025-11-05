@@ -5,6 +5,13 @@ import { UAParser } from 'ua-parser-js'
 
 console.log('Profile module initialized 🌿')
 
+const csrfToken = document
+  .querySelector('meta[name="csrf-token"]')!
+  .getAttribute('content') as string
+
+axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+
 document
   .querySelectorAll('input[name="mode"]')
   .forEach((i) => i.addEventListener('change', handleModeChange))
