@@ -106,7 +106,7 @@ export default class ProfilesController {
     await user.load('profile')
 
     const profile = user.profile!
-
+    const oldUsername = profile.username
     const { bio, avatar, username } = await request.validateUsing(UpdateProfileValidator)
 
     if (username && username !== profile.username) {
@@ -131,11 +131,13 @@ export default class ProfilesController {
 
     const userCache = cache.namespace('user')
 
-    if (profile.$dirty.username) {
-      await userCache.delete({ key: `profile:${profile.$original.username}` })
-      const messagesCache = userCache.namespace(`messages:${profile.$original.username}`)
+    if (oldUsername !== username) {
+      await userCache.delete({ key: `profile:${oldUsername}` })
+      const messagesCache = userCache.namespace(`messages:${oldUsername}`)
       await messagesCache.clear()
     }
+
+    await userCache.delete({ key: `profile:${profile.username}` })
 
     await userCache.set({
       key: `profile:${profile.username}`,
