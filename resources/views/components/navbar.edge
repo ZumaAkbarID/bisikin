@@ -70,7 +70,7 @@
         href="{{ request.url() == '/' ? '#fitur' : route('landing') + '#fitur' }}"
         class="text-gray-700 font-medium hover:text-gray-900"
       >Fitur</a>
-      @if(auth.isAuthenticated)
+      @if(auth.use("web").isAuthenticated)
         <button
           class="px-6 py-2 bg-[--color-primary] text-gray-800 hover:bg-[#8bb4b1] rounded-full shadow-sm font-medium transition-all cursor-pointer duration-250"
           id="btn-login"
