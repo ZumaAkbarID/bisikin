@@ -91,6 +91,13 @@ export default class ProfilesController {
       return response.badRequest({ available: false, message: 'Username dibutuhkan' })
     }
 
+    if (username.length < 3 || username.length > 30) {
+      return response.badRequest({
+        available: false,
+        message: 'Panjang username harus antara 3-30 karakter',
+      })
+    }
+
     return response.ok(await ProfileService.checkUsernameAvailability(username))
   }
 
